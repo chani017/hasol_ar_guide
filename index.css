@@ -7,15 +7,15 @@ body{
     overflow: hidden;
 }
 
+a{
+    color: #FFFFFF;
+}
+
 .about{
     font-family: 'Pretendard';
     font-weight: 900;
     margin-top: 50px;
     text-align: center;
-}
-
-a{
-    color: #FFFFFF;
 }
 
 .title{
