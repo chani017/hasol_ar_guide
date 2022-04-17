@@ -1,0 +1,11 @@
+@import url(//fonts.googleapis.com/earlyaccess/notosanskr.css);
+
+body{
+    background-color: #ee7a39;
+}
+
+.title{
+    color: #FFFFFF;
+    font-size: 100px;
+    font-weight: 900;
+}
