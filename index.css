@@ -2,7 +2,7 @@
 
 body{
     height: 100vh;
-    background-image: url(./asset/bgbg.png);
+    background-image: url(./asset/bgbg.png) no-repeat center;
     background-size: cover;
     overflow: hidden;
 }
