@@ -65,7 +65,7 @@ class ARButton {
 
 				currentSession.removeEventListener( 'end', onSessionEnded );
 
-				button.textContent = 'AR 시작하기';
+				button.textContent = 'START AR';
 				sessionInit.domOverlay.root.style.display = 'none';
 
 				currentSession = null;
@@ -80,7 +80,7 @@ class ARButton {
 			button.style.left = 'calc(50% - 50px)';
 			button.style.width = '100px';
 
-			button.textContent = 'START AR';
+			button.textContent = 'AR 시작하기';
 
 			button.onmouseenter = function () {
 
