@@ -16,7 +16,7 @@ class ARButton {
 				svg.setAttribute( 'width', 38 );
 				svg.setAttribute( 'height', 38 );
 				svg.style.position = 'absolute';
-				svg.style.right = '20px';
+				svg.style.left = '20px';
 				svg.style.top = '20px';
 				svg.addEventListener( 'click', function () {
 
@@ -146,7 +146,7 @@ class ARButton {
 		function stylizeElement( element ) {
 
 			element.style.position = 'absolute';
-			element.style.bottom = '20px';
+			element.style.bottom = '265px';
 			element.style.padding = '12px 6px';
 			element.style.border = '1px solid #fff';
 			element.style.borderRadius = '20px';
