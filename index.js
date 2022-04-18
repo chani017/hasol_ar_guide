@@ -48,7 +48,7 @@ import { ARButton } from './jsm/webxr/ARButton.js';
 
         gltfLoader.load( url, ( gltf ) => {
                 model = gltf.scene;
-                model.name = "model"
+                model.name = "model";
             }
         );
 
