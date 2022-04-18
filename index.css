@@ -13,7 +13,7 @@ a{
 
 .about{
     font-family: 'Pretendard';
-    font-weight: 900;
+    font-weight: 700;
     margin-top: 50px;
     text-align: center;
 }
@@ -24,4 +24,11 @@ a{
     color: #FFFFFF;
     font-size: 85px;
     font-weight: 900;
+}
+
+footer{
+    color: #FFFFFF;
+    font-family: 'Pretendard';
+    font-weight: 700;
+    text-align: center;
 }
