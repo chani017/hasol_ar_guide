@@ -1,6 +1,6 @@
-import * as THREE from './build/three.module.js';
-import { ARButton } from './jsm/webxr/ARButton.js';
+import * as THREE from 'three';
 import { GLTFLoader } from './jsm/loaders/GLTFLoader.js';
+import { ARButton } from './jsm/webxr/ARButton.js';
 
     let container;
     let camera, scene, renderer;
@@ -13,7 +13,6 @@ import { GLTFLoader } from './jsm/loaders/GLTFLoader.js';
 
     init();
     animate();
-    loader();
 
     function init() {
 
@@ -42,18 +41,22 @@ import { GLTFLoader } from './jsm/loaders/GLTFLoader.js';
 
         //
 
-        const geometry = new THREE.CylinderGeometry( 0.1, 0.1, 0.2, 32 ).translate( 0, 0.1, 0 );
+        
+        const gltfLoader = new GLTFLoader();
+        const url = './assets/scene.gltf';
+        var model = new THREE.Object3D();
+
+        gltfLoader.load( url, (gltf) => {
+                model = gltf.scene;
+                model.name = "model"
+            }
+        );
 
         function onSelect() {
 
             if ( reticle.visible ) {
-
-                const material = new THREE.MeshPhongMaterial( { color: 0xffffff * Math.random() } );
-                const mesh = new THREE.Mesh( geometry, material );
-                reticle.matrix.decompose( mesh.position, mesh.quaternion, mesh.scale );
-                mesh.scale.y = Math.random() * 2 + 1;
-                scene.add( mesh );
-
+                reticle.matrix.decompose( model.position, model.quaternion, model.scale );
+                scene.add(model);
             }
 
         }
@@ -74,18 +77,6 @@ import { GLTFLoader } from './jsm/loaders/GLTFLoader.js';
 
         window.addEventListener( 'resize', onWindowResize );
 
-    }
-
-    function loader() {
-        const loader = new GLTFLoader();
-        const url = './assets/seokga.glb';
-        loader.load( 
-            url,
-            (glb) => {
-                const root = glb.scene;
-                this_scene.add(root);
-            }
-        )
     }
 
     function onWindowResize() {
