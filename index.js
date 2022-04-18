@@ -24,7 +24,7 @@ import { ARButton } from './jsm/webxr/ARButton.js';
         camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.01, 20 );
 
         const light = new THREE.DirectionalLight( 0xffffff, 1);
-        light.position.set(2,2,5)
+        light.position.set(2,2,2)
         scene.add( light );
 
         //
