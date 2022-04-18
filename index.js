@@ -23,8 +23,8 @@ import { ARButton } from './jsm/webxr/ARButton.js';
 
         camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.01, 20 );
 
-        const light = new THREE.HemisphereLight( 0xffffff, 0xbbbbff, 1 );
-        light.position.set( 0.5, 1, 0.25 );
+        const light = new THREE.DirectionalLight( 0xffffff, 1);
+        light.position.set(2,2,5)
         scene.add( light );
 
         //
@@ -43,11 +43,11 @@ import { ARButton } from './jsm/webxr/ARButton.js';
 
         
         const gltfLoader = new GLTFLoader();
-        const url = './assets/scene.gltf';
+        const url = './assets/seokga.glb';
         var model = new THREE.Object3D();
 
-        gltfLoader.load( url, (gltf) => {
-                model = gltf.scene;
+        gltfLoader.load( url, (glb) => {
+                model = glb.scene;
                 model.name = "model"
             }
         );
@@ -55,6 +55,7 @@ import { ARButton } from './jsm/webxr/ARButton.js';
         function onSelect() {
 
             if ( reticle.visible ) {
+                model.scale.set(2,2,2)
                 reticle.matrix.decompose( model.position, model.quaternion, model.scale );
                 scene.add(model);
             }
