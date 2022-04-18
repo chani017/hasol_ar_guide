@@ -43,11 +43,11 @@ import { ARButton } from './jsm/webxr/ARButton.js';
 
         
         const gltfLoader = new GLTFLoader();
-        const url = './assets/seokga.glb';
+        const url = './assets/seokga.gltf';
         var model = new THREE.Object3D();
 
-        gltfLoader.load( url, (glb) => {
-                model = glb.scene;
+        gltfLoader.load( url, ( gltf ) => {
+                model = gltf.scene;
                 model.name = "model"
             }
         );
