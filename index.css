@@ -18,12 +18,24 @@ a{
     text-align: center;
 }
 
-.title{
+.main-title{
     font-family: 'Pretendard';
     margin-top: -50px;
     color: #FFFFFF;
     font-size: 80px;
     font-weight: 900;
+}
+
+.sub-title{
+    position: absolute;
+    top: 96px;
+    left: 230px;
+    font-family: 'Pretendard';
+    color: #FFFFFF;
+    font-size: 12px;
+    line-height: 20px;
+    font-weight: 700;
+    text-align: left;
 }
 
 footer{
