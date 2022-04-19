@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { GLTFLoader } from './jsm/loaders/GLTFLoader.js';
 import { ARButton } from './jsm/webxr/ARButton.js';
+import { GLTFLoader } from './jsm/loaders/GLTFLoader.js';
 
     let container;
     let camera, scene, renderer;
@@ -54,7 +54,7 @@ import { ARButton } from './jsm/webxr/ARButton.js';
 
         
         const gltfLoader = new GLTFLoader();
-        const url = './assets/scene.gltf';
+        const url = './assets/portal.gltf';
         var model = new THREE.Object3D();
 
         gltfLoader.load( url, ( gltf ) => {
