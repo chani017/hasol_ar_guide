@@ -1,9 +1,9 @@
 import * as THREE from "build/three.module";
 // global scene values
-var btn, gl, glCanvas, camera, scene, renderer, cube;
+let btn, gl, glCanvas, camera, scene, renderer, cube;
 
 // global xr value
-var xrSession = null;
+let xrSession = null;
 
 loadScene();
 init();
@@ -23,12 +23,12 @@ function loadScene() {
 
     scene = new THREE.Scene();
 
-    var light = new THREE.HemisphereLight( 0xffffff, 0xbbbbff, 1 );
+    const light = new THREE.HemisphereLight( 0xffffff, 0xbbbbff, 1 );
 				light.position.set( 0.5, 1, 0.25 );
                 scene.add( light );
 
-    var geometry = new THREE.BoxBufferGeometry(0.2, 0.2, 0.2);
-    var material = new THREE.MeshPhongMaterial({color: 0x89CFF0});
+    const geometry = new THREE.BoxBufferGeometry(0.2, 0.2, 0.2);
+    const material = new THREE.MeshPhongMaterial({color: 0x89CFF0});
     cube = new THREE.Mesh( geometry, material );
     cube.position.y = 0.2;
     scene.add( cube );
@@ -51,7 +51,7 @@ function init() {
                     btn = document.createElement("button");
                     btn.addEventListener('click', onRequestSession);
                     btn.innerHTML = "Enter XR";
-                    var header = document.querySelector("header");
+                    const header = document.querySelector("header");
                     header.appendChild(btn);
                 }
                 else {
