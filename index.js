@@ -1,164 +1,132 @@
-import * as THREE from 'three';
-import { ARButton } from './jsm/webxr/ARButton.js';
-import { GLTFLoader } from './jsm/loaders/GLTFLoader.js';
+import * as THREE from "three/build/three.module";
+// global scene values
+var btn, gl, glCanvas, camera, scene, renderer, cube;
 
-    let container;
-    let camera, scene, renderer;
-    let controller;
+// global xr value
+var xrSession = null;
 
-    let reticle;
+loadScene();
+init();
 
-    let hitTestSource = null;
-    let hitTestSourceRequested = false;
+function loadScene() {
+    // setup WebGL
+    glCanvas = document.createElement('canvas');
+    gl = glCanvas.getContext('webgl', { antialias: true });
+    
+    // setup Three.js scene
+    camera = new THREE.PerspectiveCamera(
+        70,
+        window.innerWidth / window.innerHeight,
+        0.01,
+        1000
+    );
 
-    init();
-    animate();
+    scene = new THREE.Scene();
 
-    function init() {
+    var light = new THREE.HemisphereLight( 0xffffff, 0xbbbbff, 1 );
+				light.position.set( 0.5, 1, 0.25 );
+                scene.add( light );
 
-        container = document.createElement( 'div' );
-        document.body.appendChild( container );
+    var geometry = new THREE.BoxBufferGeometry(0.2, 0.2, 0.2);
+    var material = new THREE.MeshPhongMaterial({color: 0x89CFF0});
+    cube = new THREE.Mesh( geometry, material );
+    cube.position.y = 0.2;
+    scene.add( cube );
 
-        scene = new THREE.Scene();
+    // setup Three.js WebGL renderer
+    renderer = new THREE.WebGLRenderer({
+        canvas: glCanvas,
+        context: gl
+    });
+    renderer.setPixelRatio( window.devicePixelRatio );
+    renderer.setSize( window.innerWidth, window.innerHeight );
+    renderer.xr.enabled = true;
+    document.body.appendChild( renderer.domElement );
+}
 
-        camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.01, 20 );
-
-        const hemiLight = new THREE.HemisphereLight( 0xffffff, 0x444444 );
-        hemiLight.position.set( 0, 20, 0 );
-        scene.add( hemiLight );
-
-        const dirLight = new THREE.DirectionalLight( 0xffffff );
-        dirLight.position.set( - 3, 10, - 10 );
-        dirLight.castShadow = true;
-        dirLight.shadow.camera.top = 2;
-        dirLight.shadow.camera.bottom = - 2;
-        dirLight.shadow.camera.left = - 2;
-        dirLight.shadow.camera.right = 2;
-        dirLight.shadow.camera.near = 0.1;
-        dirLight.shadow.camera.far = 40;
-        scene.add( dirLight );
-
-        //
-
-        renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true } );
-        renderer.setPixelRatio( window.devicePixelRatio );
-        renderer.setSize( window.innerWidth, window.innerHeight );
-        renderer.xr.enabled = true;
-        container.appendChild( renderer.domElement );
-
-        //
-
-        document.body.appendChild( ARButton.createButton( renderer ) );
-
-        //
-
-        
-        const gltfLoader = new GLTFLoader();
-        const url = './assets/portal.gltf';
-        var model = new THREE.Object3D();
-
-        gltfLoader.load( url, ( gltf ) => {
-                model = gltf.scene;
-                model.name = "model";
-            }
-        );
-
-        function onSelect() {
-
-            if ( reticle.visible ) {
-                model.scale.set(2,2,2)
-                reticle.matrix.decompose( model.position, model.quaternion, model.scale );
-                scene.add(model);
-            }
-
-        }
-
-        controller = renderer.xr.getController( 0 );
-        controller.addEventListener( 'select', onSelect );
-        scene.add( controller );
-
-        reticle = new THREE.Mesh(
-            new THREE.RingGeometry( 0.15, 0.2, 32 ).rotateX( - Math.PI / 2 ),
-            new THREE.MeshBasicMaterial()
-        );
-        reticle.matrixAutoUpdate = false;
-        reticle.visible = false;
-        scene.add( reticle );
-
-        //
-
-        window.addEventListener( 'resize', onWindowResize );
-
-    }
-
-    function onWindowResize() {
-
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-
-        renderer.setSize( window.innerWidth, window.innerHeight );
-
-    }
-
-    //
-
-    function animate() {
-
-        renderer.setAnimationLoop( render );
-
-    }
-
-    function render( timestamp, frame ) {
-
-        if ( frame ) {
-
-            const referenceSpace = renderer.xr.getReferenceSpace();
-            const session = renderer.xr.getSession();
-
-            if ( hitTestSourceRequested === false ) {
-
-                session.requestReferenceSpace( 'viewer' ).then( function ( referenceSpace ) {
-
-                    session.requestHitTestSource( { space: referenceSpace } ).then( function ( source ) {
-
-                        hitTestSource = source;
-
-                    } );
-
-                } );
-
-                session.addEventListener( 'end', function () {
-
-                    hitTestSourceRequested = false;
-                    hitTestSource = null;
-
-                } );
-
-                hitTestSourceRequested = true;
-
-            }
-
-            if ( hitTestSource ) {
-
-                const hitTestResults = frame.getHitTestResults( hitTestSource );
-
-                if ( hitTestResults.length ) {
-
-                    const hit = hitTestResults[ 0 ];
-
-                    reticle.visible = true;
-                    reticle.matrix.fromArray( hit.getPose( referenceSpace ).transform.matrix );
-
-                } else {
-
-                    reticle.visible = false;
-
+function init() {
+        navigator.xr.isSessionSupported('immersive-ar')
+            .then((supported) => {
+                if (supported) {
+                    btn = document.createElement("button");
+                    btn.addEventListener('click', onRequestSession);
+                    btn.innerHTML = "Enter XR";
+                    var header = document.querySelector("header");
+                    header.appendChild(btn);
                 }
+                else {
+                    navigator.xr.isSessionSupported('inline')
+                        .then((supported) => {
+                            if (supported) {
+                                console.log('inline session supported')
+                            }
+                            else {console.log('inline not supported')};
+                        })
+                }
+            })
+            .catch((reason) => {
+                console.log('WebXR not supported: ' + reason);
+            });
+}
 
-            }
+function onRequestSession() {
+    console.log("requesting session");
+    navigator.xr.requestSession('immersive-ar', {requiredFeatures: ['viewer', 'local']})
+        .then(onSessionStarted)
+        .catch((reason) => {
+            console.log('request disabled: ' + reason);
+        });
+}
 
-        }
+function onSessionStarted(session) {
+    console.log('starting session');
+    btn.removeEventListener('click', onRequestSession);
+    btn.addEventListener('click', endXRSession);
+    btn.innerHTML = "STOP AR";
+    xrSession = session;
+    xrSession.addEventListener("end", onSessionEnd);
+    setupWebGLLayer()
+        .then(()=> {
+            renderer.xr.setReferenceSpaceType('local');
+            renderer.xr.setSession(xrSession);
+            animate();
+        })
+}
 
-        renderer.render( scene, camera );
+function setupWebGLLayer() {
+    return gl.makeXRCompatible().then(() => {
+        xrSession.updateRenderState( {baseLayer: new XRWebGLLayer(xrSession, gl) });
+    });
+}
 
+function animate() {
+    renderer.setAnimationLoop(render);
+}
+
+function render(time) {
+    if (!xrSession) {
+        renderer.clear(true, true, true);
+        return;
+    } else {
+        time *= 0.001;
+        cube.translateY(0.2 * Math.sin(time) / 100);
+        cube.rotateY(Math.PI / 180);
+        renderer.render(scene, camera);
+        //renderer.render(scene, camera);
     }
+}
+
+function endXRSession() {
+    if (xrSession) {
+        console.log('ending session...');
+        xrSession.end().then(onSessionEnd);
+    }
+}
+
+function onSessionEnd() {
+    xrSession = null;
+    console.log('session ended');
+    btn.innerHTML = "START AR";
+    btn.removeEventListener('click', endXRSession);
+    btn.addEventListener('click', onRequestSession);
+}
